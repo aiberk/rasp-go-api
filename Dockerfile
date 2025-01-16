@@ -1,16 +1,23 @@
-# Use an official Go image
-FROM golang:1.22.3
+# Use an ARM-compatible base image
+FROM --platform=$BUILDPLATFORM golang:1.22.3
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the application source code
+# Copy the source code
 COPY . .
+
+# Set environment variables for cross-compilation
+ARG TARGETPLATFORM
+ARG TARGETOS
+ARG TARGETARCH
+ENV GOOS=$TARGETOS
+ENV GOARCH=$TARGETARCH
 
 # Build the Go application
 RUN go build -o go-api
 
-# Expose the port the application runs on
+# Expose the application port
 EXPOSE 8080
 
 # Command to run the application
